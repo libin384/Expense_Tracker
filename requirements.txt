@@ -12,7 +12,6 @@ h11==0.16.0
 idna==3.10
 joblib==1.4.2
 mysql-connector-python==9.3.0
-mysqlclient==2.2.7
 narwhals==2.1.2
 nltk==3.9.1
 numpy==2.3.2
