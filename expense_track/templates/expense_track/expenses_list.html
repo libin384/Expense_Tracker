@@ -1,0 +1,121 @@
+{% load static %}
+
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+  <title>Expenses</title>
+  
+</head>
+
+{% block content %}
+
+<body>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      // Get a reference to the long_term checkbox and the fields to toggle
+      var longTermCheckbox = $('#id_long_term');
+      var longTermFields = $('#interest_rate, #end_date');
+
+      // Initially hide the long_term fields
+      longTermFields.hide();
+
+      // Toggle the long_term fields based on checkbox selection
+      longTermCheckbox.on('change', function () {
+        if (longTermCheckbox.is(':checked')) {
+          longTermFields.show();
+        } else {
+          longTermFields.hide();
+        }
+      });
+    });
+    </script>
+    
+    <div class="main">
+    <div class="main-1">
+      <div class="graph">
+        <div class="bar-chart">
+          <h2>Monthly Expenses Bar Chart</h2>
+          <div class="plotly-chart" id="plotly-chart"></div>
+        </div>
+
+      </div>
+      <div class="expense">
+        <h2>Expense List</h2>
+
+        <div class="expenses">
+          {% for year_month, expenses in expense_data.items %}
+          <div class="month">
+            <h3> Month: {{ year_month }}</h3>
+            
+            <div class="expense-list">
+              <div class="expense-header">
+                <span>Name</span>
+                <span>Date</span>
+                <span>Amount</span>
+              </div>
+
+              {% for expense in expenses %}
+                <div class="expense-row">
+                  <span class="expense-name">{{ expense.name }}</span>
+                  <span class="expense-date">{{ expense.date|date:"M d, Y" }}</span>
+                  <span class="expense-amount">₹{{ expense.amount }}</span>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="lower">
+      <div class="income">
+        <h2>Add Long Term Liability or Daily Expense</h2>
+        <form method="post">
+          {% csrf_token %}
+          {{ form.long_term.label_tag }}
+          {{ form.long_term }}
+          <br> <br>
+          {{ form.name.label_tag }}
+          {{ form.name }}
+          {{ form.amount.label_tag }}
+          {{ form.amount }}
+          <br> <br>
+          {{ form.date.label_tag }}
+          {{ form.date }}
+          <!-- Display long_term checkbox -->
+          <br> <br>
+
+          <!-- Display fields based on long_term value using if conditions -->
+          <div id="end_date">
+            {{ form.end_date.label_tag }}
+            {{ form.end_date }}
+          </div>
+          <br>
+          <div id="interest_rate">
+            {{ form.interest_rate.label_tag }}
+            {{ form.interest_rate }}
+          </div>
+          <br>
+          <button type="submit" class="btn btn-success">Add Liability</button>
+        </form>
+        <!-- <div class="lower-2"><label for="saving-goal">Monthly Saving Goal:</label> -->
+          <!-- <input type="number"style="margin-bottom:10px;" class="form-control" id="saving-goal" name="saving-goal" step="any"><br> -->
+          <!-- <button id="set-saving-goal" class="btn btn-success">Set Saving Goal</button> -->
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+
+  <script>
+    // Initialize the Plotly chart
+    var graphData = {{ graph_data| safe }};
+    Plotly.newPlot('plotly-chart', graphData.data, graphData.layout);
+  </script>
+</body>
+
+{% endblock %}

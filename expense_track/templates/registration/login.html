@@ -1,0 +1,30 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login_styles.css' %}">
+</head>
+
+{% block content %}
+    {% if form.errors %}
+        <p>Your user name and password didn't match.Please try again</p>
+    {% endif %}
+    <form method='POST' action="{% url 'login' %}">
+        {% csrf_token %}
+            <div class="container">
+                <div class="form-container">
+                    <div class="form">
+                        <h2 style="text-align: center;">Sign Up</h2>
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        <br><br>
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                        <br>
+                    </div>
+                    <br>
+                    <div class="button-container">
+                        <input class="btn btn-primary" type="submit" value="Login"/>
+                    </div>
+                </div>
+            </div>
+    </form>
+{% endblock %}
